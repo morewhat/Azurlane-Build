@@ -116,7 +116,7 @@ DOWNLOAD_MOD_MENU() {
 
     echo "正在下载MOD补丁..."
     #local API_RESPONSE=$(curl -s "https://api.github.com/repos/${OWNER}/${REPO}/releases/latest")
-    local TARGET_VERSION="v3.2.0" # 最高支持v3.2.0
+    local TARGET_VERSION="v3.0.0" # 自行修改版本
     local API_RESPONSE=$(curl -s "https://api.github.com/repos/${OWNER}/${REPO}/releases/tags/${TARGET_VERSION}")
     local JMBQ_VERSION=$(echo "${API_RESPONSE}" | jq -r '.tag_name')
     # 修改：查找name中含有.rar的文件，而不是直接使用第一个assets
