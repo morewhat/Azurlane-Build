@@ -108,38 +108,26 @@ DOWNLOAD_APKTOOL() {
     fi
 }
 
-# 下载 Mod Patch 文件并解压
+# 下载 Mod Patch 文件并解压 (固定直链版)
 DOWNLOAD_MOD_MENU() {
-    local OWNER="JMBQ"
-    local REPO="azurlane"
-    local FILENAME="MOD_MENU.rar"
+    echo "正在使用固定直链下载MOD补丁..."
+    
+    # ⚠️ 请将下面引号里的网址替换为你找到的那个能用的旧版压缩包的真实直链
+    local DOWNLOAD_LINK="https://github.com/JMBQ/azurlane/releases/download/3.2.0/MOD_MENU_3.2.0.zip" 
+    
+    # ⚠️ 如果你找到的旧版链接是 rar 格式，请把下面的 .zip 改成 .rar
+    local FILENAME="MOD_MENU.zip" 
 
-    echo "正在下载MOD补丁..."
-    #local API_RESPONSE=$(curl -s "https://api.github.com/repos/${OWNER}/${REPO}/releases/latest")
-    local TARGET_VERSION="v3.0.0" # 自行修改版本
-    local API_RESPONSE=$(curl -s "https://api.github.com/repos/${OWNER}/${REPO}/releases/tags/${TARGET_VERSION}")
-    local JMBQ_VERSION=$(echo "${API_RESPONSE}" | jq -r '.tag_name')
-    # 修改：查找name中含有.rar的文件，而不是直接使用第一个assets
-    local DOWNLOAD_LINK=$(echo "${API_RESPONSE}" | jq -r '.assets[] | select(.name | contains(".rar")) | .browser_download_url' | head -n 1)
-
-    if [ -z "${DOWNLOAD_LINK}" ] || [ "${DOWNLOAD_LINK}" == "null" ]; then
-        # 修改：查找name中含有.zip的文件，避免后缀不一致导致的无法获取链接
-        local FILENAME="MOD_MENU.zip"
-        local DOWNLOAD_LINK=$(echo "${API_RESPONSE}" | jq -r '.assets[] | select(.name | contains(".zip")) | .browser_download_url' | head -n 1)
-        if [ -z "${DOWNLOAD_LINK}" ] || [ "${DOWNLOAD_LINK}" == "null" ]; then
-            echo "无法获取MOD Patch文件下载链接"
-            exit 1
-        fi
-    fi
-
+    # 直接使用 curl 下载你指定的链接
     curl -L -o "${DOWNLOAD_DIR}/${FILENAME}" "${DOWNLOAD_LINK}"
     if [ $? -eq 0 ]; then
         echo "补丁下载成功！文件保存至：${DOWNLOAD_DIR}/${FILENAME}"
     else
-        echo "补丁下载失败，请重试"
+        echo "补丁下载失败，请检查直链是否有效"
         exit 1
     fi
 
+    # 开始解压
     if command -v 7z &> /dev/null; then
         7z x -y "${DOWNLOAD_DIR}/${FILENAME}" -o"${DOWNLOAD_DIR}/JMBQ"
     else
@@ -151,10 +139,12 @@ DOWNLOAD_MOD_MENU() {
         echo "错误: 解压 ${FILENAME} 失败！"
         exit 1
     fi
+    
     echo "JMBQ目录内容:"  
     ls -la "${DOWNLOAD_DIR}/JMBQ" 2>/dev/null || echo "无法列出目录内容"
 
-    echo "JMBQ_VERSION=${JMBQ_VERSION}" >> "${GITHUB_ENV}"
+    # 固定一个环境变量防止后续步骤报错
+    echo "JMBQ_VERSION=Fixed_Version" >> "${GITHUB_ENV}"
 }
 
 # 下载APK（通用函数，根据构建类型执行不同的下载逻辑）
