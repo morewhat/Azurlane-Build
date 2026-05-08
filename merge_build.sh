@@ -250,7 +250,17 @@ DELETE_ORGINAL_APK() {
 # 合入MOD
 PATCH_APK() {
     echo "正在合入MOD补丁..."
-    cp -r "${DOWNLOAD_DIR}/JMBQ/assets/." "${DOWNLOAD_DIR}/DECODE_Output/assets/"
+    
+    # 让脚本自动在 JMBQ 目录下寻找 assets 文件夹
+    local MOD_ASSETS_DIR=$(find "${DOWNLOAD_DIR}/JMBQ" -type d -name "assets" 2>/dev/null | head -1)
+    if [ -z "${MOD_ASSETS_DIR}" ]; then
+        echo "错误: 找不到 assets 目录！请检查作者最新的压缩包内部格式。"
+        exit 1
+    fi
+    echo "已智能匹配到 assets 目录: ${MOD_ASSETS_DIR}"
+    
+    # 复制找到的文件夹
+    cp -r "${MOD_ASSETS_DIR}/." "${DOWNLOAD_DIR}/DECODE_Output/assets/"
     if [ $? -ne 0 ]; then
         echo "错误: 复制资源文件失败！"
         exit 1
