@@ -3,8 +3,6 @@
 ---
 <br>
 
-<!-- 以下内容为原项目的 README -->
-
 <div align="center">
   <img src="https://count.getloli.com/@azurlanejmbq?name=azurlanejmbq&theme=moebooru&padding=7&offset=0&align=top&scale=1&pixelated=1&darkmode=auto" alt="访问计数" />
   <h3 align="center">Azurlane Build</h3>
